@@ -1,4 +1,5 @@
 # My Magic Prompt
+> **Author** : **Clément Poger**
 
 **(UK)** <br>
 *This project was created for educational purposes, with the goal of discovering Bash scripting.*

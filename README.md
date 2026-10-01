@@ -1,7 +1,7 @@
 # My Magic Prompt
-> **Author** : **Clément Poger**
 
 **(UK)** <br>
+> **Author** : **Clément Poger** <br>
 *This project was created for educational purposes, with the goal of discovering Bash scripting.*
 ---
 This project is a prompt that allows you to customize your terminal and add new features.
@@ -17,6 +17,7 @@ To launch the project, copy `.env.example` to `.env`, set `PROMPT_USERNAME` and 
 
 
 **(FR)** <br>
+> **Auteur** : **Clément Poger** <br>
 *Ce projet a été crée dans un cadre éducatif ayant pour objectif la découverte du Bash Scripting.*
 ---
 Ce projet est un prompt qui vous permet de personnaliser votre terminal et d'avoir de nouvelles fonctionnalités.

@@ -1,12 +1,38 @@
 #!/bin/bash
 
-source "./cmds/quit.sh"
-source "./cmds/help.sh"
-source "./cmds/file_commands.sh"
-source "./cmds/navigation_commands.sh"
-source "./cmds/network_commands.sh"
-source "./cmds/profile_commands.sh"
-source "./cmds/rps.sh"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/.env"
+
+if [[ ! -r "$ENV_FILE" ]]; then
+  echo "Configuration absente: créez $ENV_FILE à partir de .env.example." >&2
+  exit 1
+fi
+
+if ! source "$ENV_FILE"; then
+  echo "Impossible de charger $ENV_FILE." >&2
+  exit 1
+fi
+
+PROMPT_USERNAME=${PROMPT_USERNAME%$'\r'}
+PROMPT_PASSWORD=${PROMPT_PASSWORD%$'\r'}
+
+if [[ -z "${PROMPT_USERNAME:-}" || -z "${PROMPT_PASSWORD:-}" ]]; then
+  echo "Configurez PROMPT_USERNAME et PROMPT_PASSWORD dans .env." >&2
+  exit 1
+fi
+
+: "${PROFIL_PRENOM:=}"
+: "${PROFIL_NOM:=}"
+: "${PROFIL_AGE:=}"
+: "${PROFIL_EMAIL:=}"
+
+source "$SCRIPT_DIR/cmds/quit.sh"
+source "$SCRIPT_DIR/cmds/help.sh"
+source "$SCRIPT_DIR/cmds/file_commands.sh"
+source "$SCRIPT_DIR/cmds/navigation_commands.sh"
+source "$SCRIPT_DIR/cmds/network_commands.sh"
+source "$SCRIPT_DIR/cmds/profile_commands.sh"
+source "$SCRIPT_DIR/cmds/rps.sh"
 
 cmd() {
   local command=${1:-}
@@ -41,26 +67,27 @@ cmd() {
 
 main() {
   local lineCount=1
-  local PROFIL_FILE="${HOME}/my-magic-prompt/.my_magic_prompt_profile"
-
-  if [ -f "$PROFIL_FILE" ]; then
-    . "$PROFIL_FILE"
-  fi
+  local login psswrd
   read -r -p "Nom: " login
+  login=${login%$'\r'}
+  login=${login:-$PROMPT_USERNAME}
   read -r -s -p "Code: " psswrd
+  psswrd=${psswrd%$'\r'}
   echo ""
-  if [[ "$login" == "Xzen" && "$psswrd" == "$PROFIL_CODE" ]]; then
+  if [[ "$login" != "$PROMPT_USERNAME" ]]; then
+    echo "Nom incorrect. Vérifiez PROMPT_USERNAME dans .env."
+  elif [[ "$psswrd" != "$PROMPT_PASSWORD" ]]; then
+    echo "Code incorrect."
+  else
     while [ 1 ]; do
       local date
       date=$(date +%H:%M)
-      echo -ne "${date} - [\033[31m${lineCount}\033[m] - \033[33mXzen\033[m ~ ☠️ ~ "
+      echo -ne "${date} - [\033[31m${lineCount}\033[m] - \033[33m${PROMPT_USERNAME}\033[m ~ ☠️ ~ "
       read -r string
 
       cmd $string
       lineCount=$(($lineCount+1))
     done
-  else
-    echo "Code Faux! Vous ne pouvez pas continuer."
   fi
 }
 

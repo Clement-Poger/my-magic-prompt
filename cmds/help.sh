@@ -18,6 +18,7 @@ prompt_help() {
     - httpget:          Télécharge le HTML d'une page ; demande le nom du fichier.
     - smtp:             Envoie un mail : adresse, sujet, corps.
     - open:             Ouvre un fichier dans VIM, même s'il n'existe pas.
+    - joke:             Affiche une blague aléatoire.
 
     - cp:               Crée une copie d'un fichier ou d'un dossier.
     - ln:               Crée un lien.

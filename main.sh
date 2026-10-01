@@ -26,45 +26,41 @@ fi
 : "${PROFIL_AGE:=}"
 : "${PROFIL_EMAIL:=}"
 
-source "$SCRIPT_DIR/commands/joke.sh"
-source "$SCRIPT_DIR/commands/calc.sh"
-source "$SCRIPT_DIR/cmds/quit.sh"
-source "$SCRIPT_DIR/cmds/help.sh"
-source "$SCRIPT_DIR/cmds/file_commands.sh"
-source "$SCRIPT_DIR/cmds/navigation_commands.sh"
-source "$SCRIPT_DIR/cmds/network_commands.sh"
-source "$SCRIPT_DIR/cmds/profile_commands.sh"
-source "$SCRIPT_DIR/cmds/rps.sh"
+for _script in "$SCRIPT_DIR"/commands/*.sh "$SCRIPT_DIR"/cmds/*.sh; do
+  if [[ -f "$_script" ]]; then
+    source "$_script"
+  fi
+done
 
 cmd() {
   local command=${1:-}
 
   case "$command" in
-    help ) prompt_help;;
-    ls ) prompt_ls "$@";;
-    rm ) prompt_rm;;
-    rmd | rmdir ) prompt_rmd;;
-    about ) prompt_about;;
-    version | --v | vers ) prompt_version;;
-    age ) prompt_age;;
+    help ) mmp_help;;
+    ls ) mmp_ls "$@";;
+    rm ) mmp_rm;;
+    rmd | rmdir ) mmp_rmd;;
+    about ) mmp_about;;
+    version | --v | vers ) mmp_version;;
+    age ) mmp_age;;
     quit | exit ) quit;;
-    profil ) prompt_profil;;
-    rmdirwtf ) prompt_rmdirwtf;;
-    passw ) prompt_passw;;
-    cd ) prompt_cd "$@";;
-    pwd ) prompt_pwd;;
-    hour ) prompt_hour;;
-    smtp ) prompt_smtp;;
-    httpget ) prompt_httpget "$@";;
-    echo ) prompt_echo;;
-    open ) prompt_open;;
-    touch ) prompt_touch;;
-    mkdir ) prompt_mkdir;;
-    cat ) prompt_cat;;
-    clear ) prompt_clear;;
-    rps ) prompt_rps;;
-    joke ) prompt_joke;;
-    calc ) prompt_calc;;
+    profil ) mmp_profil;;
+    rmdirwtf ) mmp_rmdirwtf;;
+    passw ) mmp_passw;;
+    cd ) mmp_cd "$@";;
+    pwd ) mmp_pwd;;
+    hour ) mmp_hour;;
+    smtp ) mmp_smtp;;
+    httpget ) mmp_httpget "$@";;
+    echo ) mmp_echo;;
+    open ) mmp_open;;
+    touch ) mmp_touch;;
+    mkdir ) mmp_mkdir;;
+    cat ) mmp_cat;;
+    clear ) mmp_clear;;
+    rps ) mmp_rps;;
+    joke ) mmp_joke;;
+    calc ) mmp_calc;;
     *) echo "Commande inconnue";;
   esac
 }

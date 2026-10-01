@@ -1,5 +1,5 @@
-prompt_profil() {
-  local legacy_profile="$SCRIPT_DIR/.my_magic_prompt_profile"
+mmp_profil() {
+  local legacy_profile="$SCRIPT_DIR/.my_magic_mmp_profile"
   local profil_choice save_profile=0
   local new_prenom new_nom new_age new_email
 
@@ -87,98 +87,4 @@ prompt_profil() {
       fi
     fi
   done
-}
-
-save_env_values() {
-  local temp_file line key
-  local -A values=() found=()
-
-  while (( $# >= 2 )); do
-    key=$1
-    case "$key" in
-      PROMPT_USERNAME|PROMPT_PASSWORD|PROFIL_PRENOM|PROFIL_NOM|PROFIL_AGE|PROFIL_EMAIL|PROFILE_IMPORTED) ;;
-      *) return 1 ;;
-    esac
-    values["$key"]=$2
-    shift 2
-  done
-
-  temp_file=$(mktemp "${ENV_FILE}.XXXXXX") || return 1
-  {
-    while IFS= read -r line || [[ -n "$line" ]]; do
-      if [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)= ]]; then
-        key=${BASH_REMATCH[1]}
-        if [[ ${values[$key]+present} ]]; then
-          printf '%s=%q\n' "$key" "${values[$key]}"
-          found["$key"]=1
-        else
-          printf '%s\n' "$line"
-        fi
-      else
-        printf '%s\n' "$line"
-      fi
-    done < "$ENV_FILE"
-    for key in "${!values[@]}"; do
-      if [[ ! ${found[$key]+present} ]]; then
-        printf '%s=%q\n' "$key" "${values[$key]}"
-      fi
-    done
-  } > "$temp_file" || {
-    rm -f -- "$temp_file"
-    return 1
-  }
-
-  if ! chmod 600 "$temp_file" || ! mv -- "$temp_file" "$ENV_FILE"; then
-    rm -f -- "$temp_file"
-    return 1
-  fi
-  for key in "${!values[@]}"; do
-    printf -v "$key" '%s' "${values[$key]}"
-  done
-}
-
-prompt_rmdirwtf() {
-  read -r -p "Cette commande nécessite votre mot de passe.
- - Mot de passe: " psswrd
-  if [[ "$psswrd" == "$PROMPT_PASSWORD" ]]; then
-    while true; do
-      read -r -p "Dossier à supprimer: " target
-      cmd rmd "$target"
-      read -r -p "Voulez-vous en supprimer un autre ? [Y-n] " repdel
-      if [[ "$repdel" =~ ^[Yy]$ ]]; then
-        continue
-      else
-        break
-      fi
-    done
-  else
-    echo "Code Faux! Vous ne pouvez pas continuer."
-  fi
-}
-
-prompt_passw() {
-  local code new_code new_code2
-  read -r -s -p "Ancien Code [Masqué]: " code
-  if [[ "$code" != "$PROMPT_PASSWORD" ]]; then
-    echo "Code Faux! Vous ne pouvez pas continuer."
-    return 1
-  fi
-
-  read -r -s -p "Nouveau Code: " new_code
-  read -r -s -p "Confirmer le Nouveau Code: " new_code2
-  echo ""
-  if [[ "$new_code" != "$new_code2" || -z "$new_code" ]]; then
-    echo "Les codes ne correspondent pas ou sont vides."
-    return 1
-  fi
-
-  if ! save_prompt_password "$new_code"; then
-    echo "Impossible d'enregistrer le nouveau code dans .env."
-    return 1
-  fi
-  echo "Code mis à jour."
-}
-
-save_prompt_password() {
-  save_env_values PROMPT_PASSWORD "$1"
 }

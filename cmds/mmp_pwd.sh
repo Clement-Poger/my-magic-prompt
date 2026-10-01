@@ -1,0 +1,3 @@
+mmp_pwd() {
+  realpath .
+}

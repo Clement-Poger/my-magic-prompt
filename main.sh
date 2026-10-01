@@ -27,6 +27,7 @@ fi
 : "${PROFIL_EMAIL:=}"
 
 source "$SCRIPT_DIR/commands/joke.sh"
+source "$SCRIPT_DIR/commands/calc.sh"
 source "$SCRIPT_DIR/cmds/quit.sh"
 source "$SCRIPT_DIR/cmds/help.sh"
 source "$SCRIPT_DIR/cmds/file_commands.sh"
@@ -63,6 +64,7 @@ cmd() {
     clear ) prompt_clear;;
     rps ) prompt_rps;;
     joke ) prompt_joke;;
+    calc ) prompt_calc;;
     *) echo "Commande inconnue";;
   esac
 }
